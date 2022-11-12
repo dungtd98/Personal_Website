@@ -1,38 +1,52 @@
-import React from 'react'
-// import skillImg from '../assets/img/skill-img.png'
-import "swiper/css";
-import "swiper/css/effect-coverflow";
-import "swiper/css/pagination";
-import { CSS, Django, DRF, HTML, JS, Postgres, Python, ReactI} from '../assets/img/index'
+import React,{useState, useEffect} from 'react'
+
 import { Fade } from "react-awesome-reveal";
+import API from '../ultis/API'
 
-
-export const SkillBox = ({pic, title}) => {
-  return (
-    <div className='skill-card'>
-        <div className="card-header">
-            <img src={pic} alt="" />
+export const SkillBox = ({skill}) => {
+    const[skillKnowledge, setSkillKnowledge] = useState(null)
+    useEffect(()=>{
+        let handleKnowledge = ()=>{
+            let data = skill.knowledge.split(/,|['/']|['|']|[\\]/)
+            setSkillKnowledge(data)
+        }
+        handleKnowledge()//eslint-disable-next-line
+    },[])
+    return (
+        <div className='skill-card'>
+            <div className="card-header">
+                <img src={skill.img} alt="" />
+            </div>
+            <div className="card-body">
+                <h2 className="card-title">{skill.name}</h2>
+                <span className="experience">{skill.exp} experience</span>
+                <ul className="knowledge">
+                    <Fade direction='right' cascade duration={500}>
+                        {skillKnowledge?.map((item, index)=>(
+                            <li key={index}>{item}</li>
+                        ))}
+                    </Fade>
+                </ul>
+            </div>
         </div>
-        <div className="card-body">
-            <h2 className="card-title">{title}</h2>
-            <span className="experience">1 year experience</span>
-            <ul className="knowledge">
-                <Fade direction='right' cascade duration={500}>
-                    <li>Lorem.</li>
-                    <li>Lorem.</li>
-                    <li>Lorem.</li>
-                    <li>Lorem.</li>
-                    <li>Lorem.</li>
-                </Fade>
-            </ul>
-        </div>
-    </div>
-  )
+    )
 }
 
 
 const Skill = () => {
-    
+    const [skills, setSkills] = useState(null)
+    useEffect(()=>{
+        let getSkills = async()=>{
+            try{
+                let resp = await API.get('/skills/')
+                setSkills(resp.data)
+                
+            }catch(error){
+
+            }
+        }
+        getSkills()
+    },[])
     return (
         <section className='skill' id='skill'>
             <Fade direction='down' duration={1500}>
@@ -43,14 +57,10 @@ const Skill = () => {
             <div className="row">
                 <div className="card-wrapper">
                     <Fade direction='right' cascade duration={500}>
-                        <SkillBox pic={HTML} title={'HTML'}/>
-                        <SkillBox pic={CSS} title={'CSS'}/>
-                        <SkillBox pic={JS} title={'Javascript'}/>
-                        <SkillBox pic={ReactI} title={'React'}/>
-                        <SkillBox pic={Django} title={'Django'}/>
-                        <SkillBox pic={DRF} title={'CSS'}/>
-                        <SkillBox pic={Python} title={'Python'}/>
-                        <SkillBox pic={Postgres} title={'Postgres'}/>
+                        {skills?.map((item, index)=>(
+                            <SkillBox key={index} skill={item}/>
+                        ))}
+            
                     </Fade>
                 </div>
                 
