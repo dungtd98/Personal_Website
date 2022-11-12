@@ -1,10 +1,23 @@
 import React from 'react'
 import { FaUser, FaEnvelope,FaPhone } from 'react-icons/fa'
 import { Slide, Fade } from "react-awesome-reveal";
-// import img from '../assets/img/skill-bg.jpg'
+import API from '../ultis/API';
+
+
 const Contact = () => {
-    let submit = (e)=>{
+    
+    let submit = async (e)=>{
         e.preventDefault()
+        try{
+            await API.post('/contacts/',{
+                "name":e.target.name.value,
+                "email":e.target.email.value,
+                "phone":e.target.number.value,
+            })
+            alert('Submit succesfully!! I will contact you soon.')
+        }catch(error){
+            console.log(error)
+        }
     }
   return (
     <section className='contact' id='contact'>
